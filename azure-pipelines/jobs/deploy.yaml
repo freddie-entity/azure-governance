@@ -1,0 +1,14 @@
+jobs:
+- job: Check
+  displayName: Job - Check
+  steps:
+  - bash: |
+      echo 'Checking...'
+    displayName: Check
+
+- job: Deploy
+  displayName: Deploy
+  steps:
+  - bash: |
+      echo 'Deploying...'
+    displayName: Deploy

@@ -1,0 +1,49 @@
+name: $(BuildID)
+
+trigger:
+  batch: true
+  branches:
+    include:
+    - fix/*
+    - feat/*
+    - main
+  tags:
+    include:
+    - v*
+  paths:
+    exclude:
+    - README.md
+
+pr:
+- main
+
+pool:
+  # vmImage: 'ubuntu-latest'
+  name: 'Homelabpool'
+
+variables:
+- template: vars/global.yaml
+- template: vars/dev.yaml
+
+stages:
+
+# Tests
+# -----
+- stage: TestStage
+  displayName: Test Stage
+  jobs:
+  - template: jobs/test.yaml
+# Build
+# -----
+- stage: BuidStage
+  displayName: Build Stage
+  # condition: or(eq(variables.isTag,'True'), and(succeeded(), eq(variables.deployMain,'True')))
+  jobs:
+  - template: jobs/docker.yaml
+
+  # Deploy
+  # ------
+- stage: DeployStage
+  displayName: Deploy Stage
+  jobs:
+  - template: jobs/deploy.yaml

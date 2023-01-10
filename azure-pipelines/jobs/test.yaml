@@ -1,0 +1,7 @@
+jobs:
+- job: Test
+  displayName: Job - Test
+  steps:
+  - bash: |
+      echo 'Testing...'
+    displayName: Test
