@@ -1,0 +1,78 @@
+# name: $(BuildID)
+
+trigger:
+  batch: true
+  branches:
+    include:
+    - fix/*
+    - feat/*
+    - main
+  tags:
+    include:
+    - v*
+  paths:
+    exclude:
+    - README.md
+
+pr:
+- main
+
+pool:
+  vmImage: 'ubuntu-latest'
+  # name: 'Homelabpool'
+
+variables:
+- template: vars/global.yaml
+- template: vars/dev.yaml
+
+stages:
+
+# SCA
+# -----
+- stage: SCAStage
+  displayName: SCA Stage
+  jobs:
+  - template: jobs/sca-owasp-dc.yaml
+
+# SAST
+# -----
+- stage: SASTStage
+  displayName: SAST Stage
+  jobs:
+  - template: jobs/sast-sonar.yaml
+
+# Build
+# -----
+- stage: BuidStage
+  displayName: Build Stage
+  # condition: or(eq(variables.isTag,'True'), and(succeeded(), eq(variables.deployMain,'True')))
+  jobs:
+  - template: jobs/image-publisher.yaml
+
+# Tests
+# -----
+- stage: TestStage
+  displayName: Test Stage
+  jobs:
+  - template: jobs/test.yaml
+
+# Deploy #DEV
+# ------
+- stage: DeployStage 
+  displayName: Deploy Stage
+  jobs:
+  - template: jobs/deploy.yaml
+
+# DAST
+# ------
+- stage: DASTStage
+  displayName: DAST Stage
+  jobs:
+  - template: jobs/DAST.yaml
+
+# Deploy #PROD
+# ------
+- stage: DeployStage 
+  displayName: Deploy Stage
+  jobs:
+  - template: jobs/deploy.yaml

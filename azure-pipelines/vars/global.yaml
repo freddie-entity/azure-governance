@@ -3,7 +3,7 @@ variables:
   # ARM
   armConnection:    unset
   acrConnection:    unset
-  dockerHubConnection:    homelabregistry
+  registryCredentials:    acrcredentials
   resourceGroup:    unset
   storageAccount:   unset
   cdnProfileName:   unset
@@ -19,13 +19,13 @@ variables:
   deployMain:       ${{ and( eq(variables.isMain,'True'), eq(variables.isTrustedCI,'True') ) }}
 
   # Docker
-  dockerRegistry:   0908887875
+  containerRegistry:   freddieentity.azurecr.io
   imageName:        netcore6
   ${{ if eq(variables.isTag, 'False') }}:
     imageTag:       dev
   ${{ if eq(variables.isTag, 'True') }}:
     imageTag:       ${{ replace(variables['Build.SourceBranch'], 'refs/tags/v', '') }}
-  dockerImage:      ${{ variables.dockerRegistry }}/${{ variables.imageName }}
+  dockerImage:      ${{ variables.containerRegistry }}/${{ variables.imageName }}
 
   # To be overwritten by dev.yaml or prod.yaml
   webAppName:    unset
